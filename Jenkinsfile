@@ -78,7 +78,7 @@ pipeline {
         stage('Stop Old App') {
             steps {
                 sh '''
-                  sudo -u ubuntu pm2 delete $devops-practice || true
+                  sudo -u ubuntu pm2 delete $APP_NAME || true
                 '''
             }
         }
@@ -88,7 +88,7 @@ pipeline {
                 sh '''
                   sudo -u ubuntu bash << EOF
                   cd $WORKDIR
-                  pm2 start index.js --name $devops-practice
+                  pm2 start index.js --name $APP_NAME
                   pm2 save
                   EOF
                 '''
