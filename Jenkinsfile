@@ -30,27 +30,68 @@
 //     }
 // }
 
+// pipeline {
+//     agent any
+
+//     stages {
+
+//         stage('Install Dependencies') {
+//             steps {
+//                 sh 'npm install'
+//             }
+//         }
+
+//         stage('Stop Old App') {
+//             steps {
+//                 sh 'pm2 stop devops-practice || true'
+//                 sh 'pm2 delete devops-practice || true'
+//             }
+//         }
+
+//         stage('Start App') {
+//             steps {
+//                 sh 'pm2 start index.js --name devops-practice'
+//             }
+//         }
+//     }
+// }
+
+
 pipeline {
     agent any
 
-    stages {
+    environment {
+        APP_NAME = "devops-practice"
+        WORKDIR = "/var/lib/jenkins/workspace/DemoPipeline"
+    }
 
+    stages {
         stage('Install Dependencies') {
             steps {
-                sh 'npm install'
+                sh '''
+                  cd $WORKDIR
+                  npm install
+                '''
             }
         }
 
         stage('Stop Old App') {
             steps {
-                sh 'pm2 stop devops-practice || true'
-                sh 'pm2 delete devops-practice || true'
+                sh '''
+                  sudo -u ubuntu pm2 delete $devops-practice || true
+                '''
             }
         }
 
         stage('Start App') {
             steps {
-                sh 'pm2 start index.js --name devops-practice'
+                sh '''
+                  sudo -u ubuntu bash << EOF
+                  cd $WORKDIR
+                  pm2 start index.js --name $devops-practice
+                  pm2 save
+                  EOF
+                '''
             }
         }
     }
