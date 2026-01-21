@@ -43,8 +43,8 @@ pipeline {
 
         stage('Stop Old App') {
             steps {
-                sh 'pm2 stop demo-node || true'
-                sh 'pm2 delete demo-node || true'
+                sh 'pm2 stop devops-practice || true'
+                sh 'pm2 delete devops-practice || true'
             }
         }
 
