@@ -57,19 +57,59 @@
 // }
 
 
+// pipeline {
+//     agent any
+
+//     environment {
+//         APP_NAME = "devops-practice"
+//         WORKDIR = "/var/lib/jenkins/workspace/DemoPipeline"
+//     }
+
+//     stages {
+//         stage('Install Dependencies') {
+//             steps {
+//                 sh '''
+//                   cd $WORKDIR
+//                   npm install
+//                 '''
+//             }
+//         }
+
+//         stage('Stop Old App') {
+//             steps {
+//                 sh '''
+//                   sudo -u ubuntu pm2 delete $APP_NAME || true
+//                 '''
+//             }
+//         }
+
+//         stage('Start App') {
+//             steps {
+//                 sh '''
+//                   sudo -u ubuntu bash << EOF
+//                   cd $WORKDIR
+//                   pm2 start index.js --name $APP_NAME
+//                   pm2 save
+//                   EOF
+//                 '''
+//             }
+//         }
+//     }
+// }
 pipeline {
     agent any
 
     environment {
         APP_NAME = "devops-practice"
-        WORKDIR = "/var/lib/jenkins/workspace/DemoPipeline"
+        WORKDIR  = "/var/lib/jenkins/workspace/DemoPipeline"
     }
 
     stages {
+
         stage('Install Dependencies') {
             steps {
                 sh '''
-                  cd $WORKDIR
+                  cd "$WORKDIR"
                   npm install
                 '''
             }
@@ -78,7 +118,7 @@ pipeline {
         stage('Stop Old App') {
             steps {
                 sh '''
-                  sudo -u ubuntu pm2 delete $APP_NAME || true
+                  sudo -u ubuntu pm2 delete "${APP_NAME}" || true
                 '''
             }
         }
@@ -86,11 +126,9 @@ pipeline {
         stage('Start App') {
             steps {
                 sh '''
-                  sudo -u ubuntu bash << EOF
-                  cd $WORKDIR
-                  pm2 start index.js --name $APP_NAME
-                  pm2 save
-                  EOF
+                  cd "$WORKDIR"
+                  sudo -u ubuntu pm2 start index.js --name "${APP_NAME}"
+                  sudo -u ubuntu pm2 save
                 '''
             }
         }
